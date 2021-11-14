@@ -6,6 +6,7 @@ class User(db.Model):
     __tablename__ = 'users'
     user_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50))
+    password_hash = db.Column(db.String(200))
     admin = db.Column(db.Boolean)
 
 class UserSchema(ma.SQLAlchemyAutoSchema):

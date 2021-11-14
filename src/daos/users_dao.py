@@ -40,6 +40,28 @@ class UserDAO:
         else:
             return None
 
+    def read_one_by_email(self, email):
+        """ Read one user information from database using email.
+        
+        Parameters
+        ----------
+        email: string
+            Existing user email.
+            
+        Returns
+        -------
+        dict:
+            User Information. None if non existing user.
+        """
+        user = User.query.filter(User.email == email).one_or_none()
+
+        if user is not None:
+            user_schema = UserSchema()
+            data = user_schema.dump(user)
+            return data
+        else:
+            return None
+
     def create(self, user):
         """ Create a new user in database. 
         
