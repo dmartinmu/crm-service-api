@@ -1,6 +1,7 @@
 CREATE TABLE users (
 	user_id serial NOT NULL,
 	email varchar(50) NOT NULL,
+    password_hash varchar(200) NOT NULL,
     "admin" boolean NOT NULL,
 	CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
