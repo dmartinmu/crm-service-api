@@ -5,3 +5,4 @@ flask-marshmallow==0.14.0
 marshmallow-sqlalchemy==0.26.1
 psycopg2-binary==2.9.2
 uwsgi==2.0.18
+Flask-JWT-Extended==4.3.1

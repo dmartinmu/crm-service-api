@@ -10,11 +10,11 @@ class UserController():
     def authenticate(self, username, password):
         user = UserDAO().read_one_by_email(username)
 
-        if check_password_hash(user.password_hash, password):
+        if check_password_hash(user['password_hash'], password):
             return create_access_token(identity={
-                'email': user.email,
-                'id': user.user_id,
-                'admin': user.admin})
+                'email': user['email'],
+                'id': user['user_id'],
+                'admin': user['admin']})
 
     def generate_password_hash(self, raw_password):
         return generate_password_hash(raw_password)
