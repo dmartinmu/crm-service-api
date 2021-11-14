@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required
 
 from daos import UserDAO
 from controllers import UserController
+from api.v1 import validate_admin
 
 user_view = Blueprint('user_view_v1', __name__)
 
@@ -20,6 +21,7 @@ def login():
 
 @user_view.route('/users/', methods=['GET'])
 @jwt_required()
+@validate_admin
 def list_users():
     data = UserDAO().read_all()
 
@@ -28,6 +30,7 @@ def list_users():
 
 @user_view.route('/users/<int:user_id>/', methods=['GET'])
 @jwt_required()
+@validate_admin
 def get_user(user_id):
     data = UserDAO().read_one(user_id)
 
@@ -36,6 +39,7 @@ def get_user(user_id):
 
 @user_view.route('/users/', methods=['POST'])
 @jwt_required()
+@validate_admin
 def create_user():
     user = request.form.to_dict()
     data = UserDAO().create(user)
@@ -45,6 +49,7 @@ def create_user():
 
 @user_view.route('/users/<int:user_id>/', methods=['PUT'])
 @jwt_required()
+@validate_admin
 def update_user(user_id):
     user = request.form.to_dict()
     data = UserDAO().update(user_id, user)
@@ -54,6 +59,7 @@ def update_user(user_id):
 
 @user_view.route('/users/<int:user_id>/', methods=['DELETE'])
 @jwt_required()
+@validate_admin
 def delete_user(user_id):
     result = UserDAO().delete(user_id)
     if result:
