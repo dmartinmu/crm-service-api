@@ -33,12 +33,12 @@ class CustomerDAO:
         """
         customer = Customer.query.filter(Customer.customer_id == customer_id).one_or_none()
 
-        if customer is not None:
-            customer_schema = CustomerSchema()
-            data = customer_schema.dump(customer)
-            return data
-        else:
-            return None
+        if not customer:
+            raise CustomerNotFound()
+
+        customer_schema = CustomerSchema()
+        data = customer_schema.dump(customer)
+        return data
 
     def create(self, customer):
         """ Create a new customer in database. 
@@ -80,6 +80,9 @@ class CustomerDAO:
         """
         existing_customer = Customer.query.filter(Customer.customer_id == customer_id).one_or_none()
 
+        if not existing_customer:
+            raise CustomerNotFound()
+
         schema = CustomerSchema()
         update = schema.load(customer, session=db.session)
 
@@ -105,12 +108,19 @@ class CustomerDAO:
         Returns
         -------
         boolean:
-            True if customer was deleted. False otherwise.
+            True if customer was deleted.
         """
         customer = Customer.query.filter(Customer.customer_id == customer_id).one_or_none()
 
-        if customer is not None:
-            db.session.delete(customer)
-            db.session.commit()
+        if not customer:
+            raise CustomerNotFound()
+
+        db.session.delete(customer)
+        db.session.commit()
             
         return True
+
+
+class CustomerNotFound(Exception):
+    """ Custom exception for customer not found. """
+    pass

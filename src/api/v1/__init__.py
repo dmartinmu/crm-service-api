@@ -1,7 +1,10 @@
 from functools import wraps
+import ujson
 
-from flask import g
+from flask import Response
 from flask_jwt_extended import get_jwt_identity
+
+from utils.exceptions import APIException
 
 
 def validate_admin(func):
@@ -16,6 +19,11 @@ def validate_admin(func):
         user = get_jwt_identity()
         admin = user['admin']
         if not admin:
-            raise Exception 
+            exception= APIException(403) 
+            return Response(
+                response=ujson.dumps(exception.to_dict()),
+                status=exception.status_code,
+                mimetype='application/json'
+            )
         return func(*args, **kwargs)
     return func_wrapper

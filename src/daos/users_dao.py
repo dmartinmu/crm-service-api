@@ -133,3 +133,8 @@ class UserDAO:
             db.session.commit()
             
         return True
+
+
+class UserNotFound(Exception):
+    """ Custom exception for user not found. """
+    pass

@@ -1,2 +1,2 @@
-from .customers_dao import CustomerDAO
-from .users_dao import UserDAO
+from .customers_dao import CustomerDAO, CustomerNotFound
+from .users_dao import UserDAO, UserNotFound
