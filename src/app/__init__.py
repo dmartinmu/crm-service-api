@@ -1,4 +1,5 @@
 from datetime import timedelta
+import json
 
 from flask import Flask, Response, request, send_from_directory
 from flask_jwt_extended import JWTManager
@@ -22,3 +23,12 @@ from api.v1.customer_view import customer_view as customer_view_v1
 
 app.register_blueprint(user_view_v1, url_prefix='/v1')
 app.register_blueprint(customer_view_v1, url_prefix='/v1')
+
+# Endpoint to check if API is up and running. 
+@app.route('/health/', methods=['GET'])
+def health():
+    return Response(
+        response=json.dumps({'message': 'The API is running'}),
+        status=200,
+        mimetype='application/json'
+    )
