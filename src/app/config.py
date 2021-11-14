@@ -5,7 +5,7 @@ from app import app
 
 # Configure the SQLAlchemy part of the app instance
 app.config['SQLALCHEMY_ECHO'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost:5432/crm'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:CrmCrmCrm1@db:5432/crm'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Create the SQLAlchemy db instance

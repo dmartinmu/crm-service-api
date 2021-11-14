@@ -1,0 +1,8 @@
+pykwalify==1.7
+tavern==1.0.0
+pytest==5.4.1
+pytest-cov
+bandit
+pylint
+coverage>=4.0.3
+bandit

@@ -1,0 +1,5 @@
+FROM postgres:14.1
+
+ADD ./devops/db/ini_scripts/* /docker-entrypoint-initdb.d/
+ADD ./devops/db/sql_structure /db/sql_structure
+ADD ./devops/db/sql_test /db/sql_test
