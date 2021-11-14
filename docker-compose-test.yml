@@ -1,7 +1,28 @@
 version: "3.4"
 services:
+  db:
+    build:
+      context: .  
+      dockerfile: devops/db/Dockerfile.db
+    environment:
+      - POSTGRES_PASSWORD=CrmCrmCrm1
+      - POSTGRES_DB=crm
+    ports:
+      - 5432:5432
   api:
+    build:
+      context: .
+      args:
+        test: "TRUE"
+    depends_on:
+      - "db"
     command: test
+    ports:
+      - 8000:8000
+    environment:
+      - DEBUG=True
+    logging:
+      driver: json-file
 
-  
-   
+# To run this image:
+# docker-compose up --build
