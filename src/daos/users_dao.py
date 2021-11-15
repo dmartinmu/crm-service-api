@@ -33,12 +33,12 @@ class UserDAO:
         """
         user = User.query.filter(User.user_id == user_id).one_or_none()
 
-        if user is not None:
-            user_schema = UserSchema()
-            data = user_schema.dump(user)
-            return data
-        else:
-            return None
+        if not user:
+            raise UserNotFound()
+
+        user_schema = UserSchema()
+        data = user_schema.dump(user)
+        return data
 
     def read_one_by_email(self, email):
         """ Read one user information from database using email.
@@ -55,12 +55,12 @@ class UserDAO:
         """
         user = User.query.filter(User.email == email).one_or_none()
 
-        if user is not None:
-            user_schema = UserSchema()
-            data = user_schema.dump(user)
-            return data
-        else:
-            return None
+        if not user:
+            raise UserNotFound()
+
+        user_schema = UserSchema()
+        data = user_schema.dump(user)
+        return data
 
     def create(self, user):
         """ Create a new user in database. 
@@ -102,6 +102,9 @@ class UserDAO:
         """
         existing_user = User.query.filter(User.user_id == user_id).one_or_none()
 
+        if not existing_user:
+            raise UserNotFound()
+
         schema = UserSchema()
         update = schema.load(user, session=db.session)
         update.user_id = existing_user.user_id
@@ -128,9 +131,11 @@ class UserDAO:
         """
         user = User.query.filter(User.user_id == user_id).one_or_none()
 
-        if user is not None:
-            db.session.delete(user)
-            db.session.commit()
+        if not user:
+            raise UserNotFound()
+
+        db.session.delete(user)
+        db.session.commit()
             
         return True
 
