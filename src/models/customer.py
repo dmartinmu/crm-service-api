@@ -9,7 +9,7 @@ class Customer(db.Model):
     name = db.Column(db.String(50))
     surname = db.Column(db.String(50))
     id = db.Column(db.String(50))
-    photo_url = db.Column(db.String(50))
+    photo_url = db.Column(db.String(500))
     creator_user_id = db.Column(db.Integer)
     editor_user_id = db.Column(db.Integer)
 
