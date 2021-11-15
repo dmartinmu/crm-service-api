@@ -14,6 +14,8 @@ REST API to manage customer data for a small shop.
 
 ## Getting started
 
+Visit repo [wiki](https://github.com/dmartinmu/crm-service-api/wiki) and check API endpoints usage information.
+
 ### Running the API
 This section details how to deploy and run the API and database.
 
