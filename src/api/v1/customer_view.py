@@ -3,7 +3,7 @@ import ujson
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from cerberus import Validator
 
-from daos import CustomerDAO, CustomerNotFound
+from daos import CustomerDAO, CustomerNotFound, CustomerPhotoNotFound
 from controllers import CustomerController
 from utils.exceptions import ResourceNotFoundException, CerberusException
 
@@ -14,6 +14,10 @@ customer_view = Blueprint('customer_view_v1', __name__)
 @jwt_required()
 def list_customers():
     data = CustomerDAO().read_all()
+
+    for customer in data:
+        if customer['photo_url']:
+            customer['photo_url'] = CustomerDAO().generate_photo_url(customer['customer_id'])
 
     return Response(ujson.dumps(data), status=200, mimetype='application/json')
 
@@ -30,8 +34,9 @@ def get_customer(customer_id):
             status=exception.status_code,
             mimetype='application/json'
         )
-
-    data['photo_url'] = 'http://localhost:8000/v1/customers/{}/photo/'.format(customer_id)
+    
+    if data['photo_url']:
+        data['photo_url'] = CustomerDAO().generate_photo_url(data['customer_id'])
 
     return Response(ujson.dumps(data), status=200, mimetype='application/json')
 
@@ -48,8 +53,15 @@ def get_customer_photo(customer_id):
             status=exception.status_code,
             mimetype='application/json'
         )
-
-    photo_path = CustomerController().get_photo_path(data['photo_url'])
+    try:
+        photo_path = CustomerController().get_photo_path(data['photo_url'])
+    except CustomerPhotoNotFound:
+        exception = ResourceNotFoundException("Customer {} photo not found".format(customer_id))
+        return Response(
+            response=ujson.dumps(exception.to_dict()),
+            status=exception.status_code,
+            mimetype='application/json'
+        )
 
     return send_file(photo_path, mimetype='image/jpg')
 
@@ -85,6 +97,9 @@ def create_customer():
         photo_url = customer_controller.save_photo(photo_file)
         customer['photo_url'] = photo_url
     data = CustomerDAO().create(customer)
+    
+    if data['photo_url']:
+        data['photo_url'] = CustomerDAO().generate_photo_url(data['customer_id'])
 
     return Response(ujson.dumps(data), status=200, mimetype='application/json')
 
@@ -128,6 +143,9 @@ def update_customer(customer_id):
             status=exception.status_code,
             mimetype='application/json'
         )
+
+    if data['photo_url']:
+        data['photo_url'] = CustomerDAO().generate_photo_url(data['customer_id'])
 
     return Response(ujson.dumps(data), status=200, mimetype='application/json')
 

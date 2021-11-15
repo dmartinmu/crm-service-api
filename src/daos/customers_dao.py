@@ -60,7 +60,7 @@ class CustomerDAO:
         db.session.commit()
 
         data = schema.dump(new_customer)
-
+        
         return data
 
     def update(self, customer_id, customer):
@@ -121,7 +121,26 @@ class CustomerDAO:
             
         return True
 
+    def generate_photo_url(self, customer_id):
+        """ Generates photo URL for a customer.
+        
+        Parameters
+        ----------
+        customer_id: int
+            Database customer id.
+            
+        Returns
+        -------
+        string:
+            Photo URL.
+        """
+        return 'http://localhost:8000/v1/customers/{}/photo/'.format(customer_id)
+
 
 class CustomerNotFound(Exception):
     """ Custom exception for customer not found. """
+    pass
+
+class CustomerPhotoNotFound(Exception):
+    """ Custom exception for customer photo not found. """
     pass

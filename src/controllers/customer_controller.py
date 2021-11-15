@@ -1,6 +1,8 @@
 import os
 import pathlib
 
+from daos import CustomerPhotoNotFound
+
 class CustomerController():
     """ Controller object to perform actions on customer information"""
 
@@ -49,5 +51,9 @@ class CustomerController():
         str:
             Complete stored file path.
         """
-        file_path = os.path.join(os.getcwd(), filename)
+        try:
+            file_path = os.path.join(os.getcwd(), filename)
+        except Exception as e:
+            raise CustomerPhotoNotFound()
+        
         return file_path
