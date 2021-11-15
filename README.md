@@ -16,6 +16,10 @@ REST API to manage customer data for a small shop.
 
 Visit repo [wiki](https://github.com/dmartinmu/crm-service-api/wiki) and check API endpoints usage information.
 
+You can also use Swagger UI once API is running:
+```
+http://localhost:8000/v1/
+```
 ### Running the API
 This section details how to deploy and run the API and database.
 

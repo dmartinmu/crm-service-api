@@ -1,0 +1,494 @@
+openapi: 3.0.1
+
+info:
+  title: CRM Service API
+  description: REST API to manage customer data for a small shop.
+  version: 1.0.0
+
+servers:
+- url: http://localhost:8000
+  description: Development server.
+
+tags:
+- name: Users
+  description: User management and login 
+- name: Customers
+  description: Customer information management
+
+paths:
+  /v1/users/login:
+    post:
+      tags:
+      - Users
+      summary: Authenticates a user in the system.
+      description: |
+        Authenticates a user in the system. A new access token is generated for the username and password sent in the body.
+      operationId: post_login
+      requestBody:
+        description: The username and password to authenticate.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: Json with the access token and refresh token.
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          $ref: '#/components/responses/BadRequest'
+  /v1/users:
+    get:
+      tags:
+      - Users
+      summary: List all existing users.
+      operationId: get_users
+      security:
+        - api_key:
+          - api_key
+      responses:
+        200:
+          description: Existing users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+      - Users
+      summary: Create a new user.
+      operationId: post_user
+      security:
+        - api_key:
+          - api_key
+      requestBody:
+        description: New user information.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                admin:
+                  type: boolean
+        required: true
+      responses:
+        200:
+          description: Created user information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /v1/users/{user_id}:
+    get:
+      tags:
+      - Users
+      summary: Get user information
+      operationId: get_user
+      security:
+        - api_key:
+          - api_key
+      parameters:
+      - name: user_id
+        in: path
+        description: User identifier
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Created user information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    put:
+      tags:
+      - Users
+      summary: Edit user information
+      operationId: put_user
+      security:
+        - api_key:
+          - api_key
+      parameters:
+      - name: user_id
+        in: path
+        description: User identifier
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: User information.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                admin:
+                  type: boolean
+        required: true
+      responses:
+        200:
+          description: Modified user information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    delete:
+      tags:
+      - Users
+      summary: Delete user information
+      operationId: delete_user
+      security:
+        - api_key:
+          - api_key
+      parameters:
+      - name: user_id
+        in: path
+        description: User identifier
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+
+  /v1/customers:
+    get:
+      tags:
+      - Customers
+      summary: List all existing customers.
+      operationId: get_customers
+      security:
+        - api_key:
+          - api_key
+      responses:
+        200:
+          description: Existing customers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+      - Customers
+      summary: Create a new customer.
+      operationId: post_customer
+      security:
+        - api_key:
+          - api_key
+      requestBody:
+        description: New customer information.
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                id:
+                  type: string
+                photo_file:
+                  type: file
+        required: true
+      responses:
+        200:
+          description: Created customer information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /v1/customers/{customer_id}:
+    get:
+      tags:
+      - Customers
+      summary: Get customer information
+      operationId: get_customer
+      security:
+        - api_key:
+          - api_key
+      parameters:
+      - name: customer_id
+        in: path
+        description: Customer identifier
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Created customer information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    put:
+      tags:
+      - Customers
+      summary: Edit customer information
+      operationId: put_customer
+      security:
+        - api_key:
+          - api_key
+      parameters:
+      - name: customer_id
+        in: path
+        description: Customer identifier
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Customer information.
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                id:
+                  type: string
+                photo_file:
+                  type: file
+        required: true
+      responses:
+        200:
+          description: Modified customer information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    delete:
+      tags:
+      - Customers
+      summary: Delete customer information
+      operationId: delete_customer
+      security:
+        - api_key:
+          - api_key
+      parameters:
+      - name: customer_id
+        in: path
+        description: Customer identifier
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /v1/customers/{customer_id}/photo:
+    get:
+      tags:
+      - Customers
+      summary: Get customer photo
+      operationId: get_customer_photo
+      security:
+        - api_key:
+          - api_key
+      parameters:
+      - name: customer_id
+        in: path
+        description: Customer identifier
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Created customer information.
+          content:
+            image:
+              schema:
+                type: string
+                format: binary
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/InvalidToken'
+        403:
+          $ref: '#/components/responses/Forbidden'
+
+  /health:
+    get:
+      tags:
+      - General
+      summary: Check if API is running
+      responses:
+        200:
+          description: The API is running.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The API is running
+
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: Authorization
+      description: |
+        Token using JWT specification. The token can be get using the /users/login endpoint.
+      in: header
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: integer
+            type:
+              type: string
+            message:
+              type: string
+            errors:
+              type: array
+              items:
+                type: string
+    LoginInfo:
+      required:
+      - password
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        email:
+          type: string
+        password_hash:
+          type: string
+        admin:
+          type: boolean
+    Customer:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        name:
+          type: string
+        surname:
+          type: string
+        photo_url:
+          type: boolean
+        creator_user_id:
+          type: integer
+        editor_user_id:
+          type: integer
+
+  responses:
+    BadRequest:
+      description: Syntactic error in the parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InvalidCredentials:
+      description: Bad username or password.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InvalidToken:
+      description: The token is invalid or has expired.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: User without permission to perform this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
