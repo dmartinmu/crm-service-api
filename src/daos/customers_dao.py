@@ -87,6 +87,7 @@ class CustomerDAO:
         update = schema.load(customer, session=db.session)
 
         update.customer_id = existing_customer.customer_id
+        update.creator_user_id = existing_customer.creator_user_id
         if update.photo_url is None:
             update.photo_url = existing_customer.photo_url
 

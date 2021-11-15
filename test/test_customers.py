@@ -45,9 +45,7 @@ def test_create_customer(host, token_admin_headers):
     data = {
         'name': 'John',
         'surname': 'Doe',
-        'id': '123987A',
-        'creator_user_id': '1',
-        'editor_user_id': '1'
+        'id': '123987A'
     }
     route = '/v1/customers/'
     response = requests.post(host + route, headers=token_admin_headers, data=data)
@@ -64,9 +62,7 @@ def test_create_customer_unauthorized(host):
     data = {
         'name': 'John',
         'surname': 'Doe',
-        'id': '123987A',
-        'creator_user_id': '1',
-        'editor_user_id': '1'
+        'id': '123987A'
     }
     route = '/v1/customers/'
     response = requests.post(host + route, data=data)
@@ -78,9 +74,7 @@ def test_update_customer(host, token_admin_headers):
     data = {
         'name': 'John',
         'surname': 'Doe',
-        'id': '123987A',
-        'creator_user_id': '1',
-        'editor_user_id': '1'
+        'id': '123987A'
     }
     route = '/v1/customers/2/'
     response = requests.put(host + route, headers=token_admin_headers, data=data)
@@ -93,9 +87,7 @@ def test_update_customer_not_found(host, token_admin_headers):
     data = {
         'name': 'John',
         'surname': 'Doe',
-        'id': '123987A',
-        'creator_user_id': '1',
-        'editor_user_id': '1'
+        'id': '123987A'
     }
     route = '/v1/customers/7/'
     response = requests.put(host + route, headers=token_admin_headers, data=data)
@@ -108,9 +100,7 @@ def test_update_customer_unauthorized(host):
     data = {
         'name': 'John',
         'surname': 'Doe',
-        'id': '123987A',
-        'creator_user_id': '1',
-        'editor_user_id': '1'
+        'id': '123987A'
     }
     route = '/v1/customers/4/'
     response = requests.put(host + route, data=data)

@@ -1,6 +1,6 @@
-from flask import Blueprint, Response, request
+from flask import Blueprint, Response, request, send_file
 import ujson
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from cerberus import Validator
 
 from daos import CustomerDAO, CustomerNotFound
@@ -31,7 +31,27 @@ def get_customer(customer_id):
             mimetype='application/json'
         )
 
+    data['photo_url'] = 'http://localhost:8000/v1/customers/{}/photo/'.format(customer_id)
+
     return Response(ujson.dumps(data), status=200, mimetype='application/json')
+
+
+@customer_view.route('/customers/<int:customer_id>/photo/', methods=['GET'])
+@jwt_required()
+def get_customer_photo(customer_id):
+    try:
+        data = CustomerDAO().read_one(customer_id)
+    except CustomerNotFound:
+        exception = ResourceNotFoundException("Customer {} not found".format(customer_id))
+        return Response(
+            response=ujson.dumps(exception.to_dict()),
+            status=exception.status_code,
+            mimetype='application/json'
+        )
+
+    photo_path = CustomerController().get_photo_path(data['photo_url'])
+
+    return send_file(photo_path, mimetype='image/jpg')
 
 
 @customer_view.route('/customers/', methods=['POST'])
@@ -41,9 +61,7 @@ def create_customer():
     v = Validator({
         'name': {'type': 'string', 'required': True},
         'surname': {'type': 'string', 'required': True},
-        'id': {'type': 'string', 'required': True},
-        'creator_user_id': {'type': 'string', 'required': True},
-        'editor_user_id': {'type': 'string', 'required': True}})
+        'id': {'type': 'string', 'required': True}})
     if not v.validate(request.form.to_dict()):
         exception = CerberusException(v)
         return Response(
@@ -53,6 +71,13 @@ def create_customer():
         )
     
     customer = request.form.to_dict()
+
+    # Get identification from user requesting
+    user = get_jwt_identity()
+    user_id = user['id']
+    customer['creator_user_id'] = user_id
+    customer['editor_user_id'] = user_id
+
     photo_url = None
     if 'photo_file' in request.files:
         photo_file = request.files['photo_file']
@@ -71,9 +96,7 @@ def update_customer(customer_id):
     v = Validator({
         'name': {'type': 'string', 'required': True},
         'surname': {'type': 'string', 'required': True},
-        'id': {'type': 'string', 'required': True},
-        'creator_user_id': {'type': 'string', 'required': True},
-        'editor_user_id': {'type': 'string', 'required': True}})
+        'id': {'type': 'string', 'required': True}})
     if not v.validate(request.form.to_dict()):
         exception = CerberusException(v)
         return Response(
@@ -83,6 +106,13 @@ def update_customer(customer_id):
         )
     
     customer = request.form.to_dict()
+
+    # Get identification from user requesting
+    user = get_jwt_identity()
+    user_id = user['id']
+    customer['creator_user_id'] = user_id
+    customer['editor_user_id'] = user_id
+
     photo_url = None
     if 'photo_file' in request.files:
         photo_file = request.files['photo_file']

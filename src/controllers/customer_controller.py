@@ -37,3 +37,17 @@ class CustomerController():
 
         except Exception as e:
             raise e
+
+    def get_photo_path(self, filename):
+        """ Return file path where photo is stored. 
+        Parameters
+        ----------
+        filename: str
+            Photo filename.
+        Returns
+        -------
+        str:
+            Complete stored file path.
+        """
+        file_path = os.path.join(os.getcwd(), filename)
+        return file_path
